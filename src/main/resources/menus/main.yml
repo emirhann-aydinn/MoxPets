@@ -1,0 +1,32 @@
+menu:
+  title: "&8MoxPets Menüsü"
+  size: 27
+
+  # Ana menü deseni
+  pattern:
+    - "# # # # # # # # #"
+    - "# # O # # # S # #"
+    - "# # # # # # # # #"
+
+  items:
+    '#':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    'O':
+      action: "OPEN_OWNED"
+      material: CHEST
+      name: "&aSahip Olduğum Petler"
+      lore:
+        - "&7Zaten senin olan petleri"
+        - "&7görüntülemek ve çağırmak için tıkla."
+    'S':
+      action: "OPEN_SHOP"
+      material: EMERALD
+      name: "&ePet Mağazası"
+      lore:
+        - "&7Yeni petler satın almak"
+        - "&7için buraya tıkla."
+    'C':
+      action: "CLOSE"
+      material: BARRIER
+      name: "&cKapat"
