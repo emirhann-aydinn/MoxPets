@@ -1,0 +1,67 @@
+menu:
+  title: "&#00D4FFPet Güçleri &8| &f%pet%"
+  size: 36
+
+  # @ = Buff Listesi
+  pattern:
+    - "X X X X X X X X X"
+    - "X @ @ @ @ @ @ @ X"
+    - "X @ @ @ @ @ @ @ X"
+    - "X X X X M X X X X"
+
+  items:
+    'X':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+
+    'M':
+      action: "OPEN_SETTINGS" # İsteğe göre OPEN_UPGRADES yapabilirsin
+      material: COMPASS
+      name: "&#FFAA00« Geri Dön"
+
+    # --- DURUM ŞABLONLARI ---
+    buff-template:
+      # DURUM 1: AKTİF (Yeşil Tema)
+      actived:
+        material: POTION
+        name: "&#55FF55%buff_name%"
+        lore:
+          - ""
+          - "&7Durum: &#55FF55&lAKTİF ✔"
+          - "&7Süre: &#00D4FFSonsuz"
+          - ""
+          - "&7Bu özellik şu an çalışıyor."
+          - ""
+          - "&#FF5555[Kapatmak için Tıkla]"
+
+      # DURUM 2: KAPALI (Kırmızı/Gri Tema)
+      deactived:
+        material: GLASS_BOTTLE
+        name: "&#FF5555%buff_name%"
+        lore:
+          - ""
+          - "&7Durum: &#FF5555&lDEVRE DIŞI ✖"
+          - "&7Süre: &8---"
+          - ""
+          - "&7Bu özelliği kapattın."
+          - ""
+          - "&#55FF55[Açmak için Tıkla]"
+
+      # DURUM 3: KİLİTLİ (Koyu Kırmızı Tema)
+      locked:
+        material: BARRIER
+        name: "&#AA0000%buff_name%"
+        lore:
+          - ""
+          - "&7Durum: &#AA0000&lKİLİTLİ 🔒"
+          - "&7Gereksinim: &#FFAA00Level %required_level%"
+          - ""
+          - "&7Petini geliştirerek bu"
+          - "&7özelliğin kilidini aç."
+
+    # HİÇ BUFF YOKSA
+    no-buff-item:
+      material: PAPER
+      name: "&#FF5555Özellik Yok"
+      lore:
+        - "&7Bu petin henüz bir özelliği yok."

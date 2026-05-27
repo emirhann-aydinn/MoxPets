@@ -1,0 +1,12 @@
+pets:
+  bee:
+    buffs:
+      - "Hızlandırıcı"
+      - "Tank"
+    display_name: "&#FFAA00&lArı Pet"
+    pet_name: "&#FFAA00&lArı Maya"
+    texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTk1NzdlNmVlMjA2MDZjNmQ2YjU0YjRjZGNhM2ZkOWM5Y2UyM2NlMWViOWIwMTBkN2U4ZDJlZDRlYzcwOTliNSJ9fX0="
+    permission: "moxpets.bee"
+    price: 1500
+    placement: {x: 0.0, y: 0.5, z: 0.0}
+    pose: {head: {x: 0, y: 0, z: 0}, body: {x: 37, y: 0, z: 0}, left_arm: {x: 0, y: 0, z: 0}, right_arm: {x: 360, y: 270, z: 286}}

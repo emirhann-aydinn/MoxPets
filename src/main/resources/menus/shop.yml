@@ -1,0 +1,41 @@
+menu:
+  title: "&8Pet Mağazası (%page%/%max%)"
+  size: 54
+
+  pattern:
+    - "# # # # # # # # #"
+    - "# @ @ @ @ @ @ @ #"
+    - "# @ @ @ @ @ @ @ #"
+    - "# @ @ @ @ @ @ @ #"
+    - "# # # # # # # # #"
+    - "< # # M # C # # >"
+
+  items:
+    '<':
+      action: "PREVIOUS_PAGE"
+      material: ARROW
+      name: "&e« Önceki Sayfa"
+    '>':
+      action: "NEXT_PAGE"
+      material: ARROW
+      name: "&aSonraki Sayfa »"
+    'M':
+      action: "OPEN_MAIN"
+      material: COMPASS
+      name: "&7Ana Menüye Dön"
+    '#':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+
+    # Pet görünümü (Mağazada fiyat yazar)
+    pet-template:
+      lore:
+        - ""
+        - "&7Tür: &f%pet_name%"
+        - "&7Fiyat: &6%price% Coin"
+        - ""
+        - "&a➡ Satın almak için tıkla!"
+      lore-owned:
+        - ""
+        - "&7Tür: &f%pet_name%"
+        - "&aZaten bu pete sahipsin!"

@@ -1,0 +1,168 @@
+# -----------------------------------------------------------------------------------------
+#           MoxPets - Profesyonel Pet Eklentisi
+#           Sürüm: 1.2 | Yapımcı: Moxicht
+# -----------------------------------------------------------------------------------------
+
+# =========================================================================================
+# [1] VERİTABANI AYARLARI (DATABASE)
+# =========================================================================================
+database:
+  # "SQLITE" (Dosya) veya "MYSQL" (Uzak Sunucu)
+  type: "SQLITE"
+  host: "localhost"
+  port: 3306
+  database: "minecraft"
+  username: "root"
+  password: ""
+  table-prefix: "moxpets_"
+  pool-size: 10
+  connection-timeout: 5000
+
+# =========================================================================================
+# [2] EKONOMİ AYARLARI (ECONOMY)
+# =========================================================================================
+economy:
+  # Pet satın alma özelliğini açar/kapatır.
+  # "VAULT" gerektirir (CoinsEngine, Essentials vb. ile çalışır).
+  enabled: true
+  type: "VAULT"
+
+# =========================================================================================
+# [3] PET AYARLARI VE KONUMLANDIRMA (SETTINGS)
+# =========================================================================================
+settings:
+  # Petin takip hızı (0.1 - 0.5 arası idealdir)
+  follow-speed: 0.2
+
+  # Petin oyuncudan uzaklaşma limiti (Bu mesafeyi geçerse ışınlanır)
+  teleport-distance: 10.0
+
+  # Oyuncuların petin içinden geçebilmesini sağlar (Hitbox yok)
+  marker-mode: true
+
+  # PETİN DURACAĞI KONUM
+  placement:
+    # "left-shoulder"  -> Sol omuz hizasında uçar (ÖNERİLEN)
+    # "right-shoulder" -> Sağ omuz hizasında uçar
+    # "behind"         -> Arkadan takip eder (Klasik)
+    mode: "left-shoulder"
+
+    # Omuz modu için hassas ayarlar (Blok cinsinden)
+    shoulder:
+      distance-side: 0.7  # Oyuncunun ne kadar yanına kaysın?
+      distance-up: 1.6    # Yerden ne kadar yüksekte olsun?
+      distance-back: 0.3  # Omuzdan ne kadar geride dursun?
+
+# =========================================================================================
+# [4] PERFORMANS VE OPTİMİZASYON (ANTI-LAG)
+# =========================================================================================
+anti-lag:
+  enabled: true
+  # TPS bu değerin altına düşerse petler gizlenir.
+  min-tps: 18.0
+  # Kontrol aralığı (Saniye)
+  check-interval: 10
+  # Oyuncu AFK ise peti gizle
+  hide-when-afk: true
+  afk-timeout-seconds: 300
+
+# =========================================================================================
+# [5] DÜNYA VE BÖLGE KISITLAMALARI (RESTRICTIONS)
+# =========================================================================================
+restrictions:
+  worlds:
+    enabled: true
+    whitelist: false # True ise sadece listedekilerde çalışır, False ise listedekilerde çalışmaz.
+    list:
+      - "pvp_arena"
+      - "parkur"
+
+  regions: # WorldGuard gerektirir
+    enabled: true
+    blacklist:
+      - "spawn_duel"
+      - "boss_area"
+
+# =========================================================================================
+# [6] EFEKTLER VE SESLER (VISUALS)
+# =========================================================================================
+visuals:
+  spawn:
+    sound: "ENTITY_PLAYER_LEVELUP"
+    volume: 1.0
+    pitch: 1.0
+    particle: "VILLAGER_HAPPY"
+    particle-count: 10
+
+  despawn:
+    sound: "ENTITY_CHICKEN_EGG"
+    volume: 1.0
+    pitch: 0.5
+    particle: "CLOUD"
+    particle-count: 5
+
+# ==========================================================
+# [5] LEVEL SİSTEMİ (DAKİKA BAZLI)
+# ==========================================================
+leveling:
+  enabled: true
+  max-level: 50
+  xp-per-minute: 1.0 # 1 Dakika = 1 XP (Hesap kolaylığı için)
+
+  # Her level için kaç dakika (XP) gerektiği
+  # Eğer listede olmayan bir levelse, formül kullanılır: (Level * 10) + 30
+  level-minutes:
+    1: 15  # Lvl 1 -> 2 için 15 dakika
+    2: 30  # Lvl 2 -> 3 için 30 dakika
+    3: 60  # Lvl 3 -> 4 için 1 saat
+    4: 120 # 2 saat
+    5: 240 # 4 saat
+
+  name-format: "%name% &8[&#FFAA00Lvl. %level%&8]"
+
+  # Menüdeki İlerleme Çubuğu Ayarları
+  progress-bar:
+    symbol: "|"
+    length: 30
+    color-filled: "&#00FF00" # Dolu kısım (Yeşil)
+    color-empty: "&#444444"  # Boş kısım (Gri)
+
+# ==========================================================
+# [9] ETKİLEŞİM AYARLARI
+# ==========================================================
+interaction:
+  f-key-menu: true # F (Swap Hands) tuşuyla menü açma
+  f-key-range: 5.0 # Kaç blok öteden çalışsın?
+
+# ==========================================================
+# [7] BUFF (GÜÇ) TANIMLARI
+# ==========================================================
+# Burada bufflara isim verip özelliklerini atarsın.
+# pets.yml dosyasında sadece buradaki İSMİ (Örn: "Hızlandırıcı") kullanırsın.
+buff-definitions:
+  "Hızlandırıcı":
+    level_required: 10
+    display: "&#00FFFFRüzgarın Hızı"  # Menüde görünen isim
+    effect: "SPEED:1"               # Minecraft Efekti (SPEED seviye 2)
+
+  "Tank":
+    level_required: 10
+    display: "&#888888Çelik Yelek"
+    effect: "DAMAGE_RESISTANCE:0"   # Direnç seviye 1
+
+  "GeceGözü":
+    level_required: 10
+    display: "&#5500FFGece Kartalı"
+    effect: "NIGHT_VISION:0"
+
+  "Zıplayan":
+    level_required: 10
+    display: "&#00FF00Çekirge"
+    effect: "JUMP:1"
+
+
+# ==========================================================
+# [8] İSİM AYARLARI
+# ==========================================================
+settings:
+  pet-name-limit: 16 # Maksimum karakter sayısı

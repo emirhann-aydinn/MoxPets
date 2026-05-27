@@ -1,0 +1,26 @@
+# src/main/resources/menus/favorites.yml
+menu:
+  title: "&8Favori Petlerim"
+  size: 54
+
+  pattern:
+    - "  # # # # # # #  "
+    - "  # # # # # # #  "
+    - "  # # # # # # #  "
+    - "  # # # # # # #  "
+    - "  # # # # # # #  "
+    - "P P P P B P P P P"
+
+  items:
+    ' ':
+      material: AIR
+    '#':
+      material: AIR
+      # Bu kısımlar favori petlerin listeleneceği alanlardır.
+    'P':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    'B':
+      action: "OPEN_MAIN"
+      material: ARROW
+      name: "&cAna Menüye Dön"

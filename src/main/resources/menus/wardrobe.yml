@@ -1,0 +1,54 @@
+menu:
+  title: "&#FF00DDGardırop &8| &7Kıyafet Seç"
+  size: 36
+
+  pattern:
+    - "# # # # # # # # #"
+    - "# K I R M Y T L #"
+    - "# # # # # # # # #"
+    - "# # # < # X # # #"
+
+  items:
+    '#':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    '<':
+      action: "OPEN_SETTINGS"
+      material: COMPASS
+      name: "&e« Geri Dön"
+    'X':
+      action: "REMOVE_ARMOR"
+      material: BARRIER
+      name: "&cKıyafeti Çıkar"
+      lore:
+        - "&7Petini doğal haline döndür."
+
+    # --- KIYAFETLER ---
+    'K':
+      action: "SET_ARMOR"
+      color: "190,0,0"
+      name: "&#FF0000Kızıl Şövalye"
+    'I':
+      action: "SET_ARMOR"
+      color: "255,165,0"
+      name: "&#FFAA00Gün Batımı"
+    'R':
+      action: "SET_ARMOR"
+      color: "255,255,0"
+      name: "&#FFFF00Altın Zırh"
+    'M':
+      action: "SET_ARMOR"
+      color: "0,255,0"
+      name: "&#00FF00Zehirli Sarmaşık"
+    'Y':
+      action: "SET_ARMOR"
+      color: "0,170,255"
+      name: "&#00AAFFGökyüzü Mavisi"
+    'T':
+      action: "SET_ARMOR"
+      color: "128,0,128"
+      name: "&#AA00AAKraliyet Moru"
+    'L':
+      action: "SET_ARMOR"
+      color: "0,0,0"
+      name: "&#333333Gece Bekçisi"

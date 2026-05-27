@@ -1,0 +1,64 @@
+name: MoxPets
+version: 1.0
+main: com.moxicht.moxpets.MyPets
+api-version: 1.20
+authors: [Moxicht]
+description: Gelismis, animasyonlu ve omuzda tasiyan pet eklentisi.
+website: www.moxicht.com
+
+# Eklentinin calismasi icin gerekli olabilecek diger eklentiler
+softdepend: [Vault, WorldGuard, PlaceholderAPI]
+
+commands:
+  pets:
+    description: MoxPets ana menüsünü açar.
+    usage: /pets [help|reload|removeall|give|revoke]
+    aliases: [moxpets, mp, pet]
+
+permissions:
+  # --- GENEL YETKİLER ---
+  moxpets.use:
+    description: /pets komutunu kullanma ve menüyü açma yetkisi.
+    default: true
+
+  moxpets.admin:
+    description: Tüm admin komutlarına (reload, give, removeall) erişim sağlar.
+    default: op
+    children:
+      moxpets.command.reload: true
+      moxpets.command.removeall: true
+      moxpets.command.give: true
+      moxpets.command.revoke: true
+      moxpets.bypass.regions: true
+      moxpets.bypass.worlds: true
+
+  # --- PET YETKİLERİ ---
+  # Kullanım: moxpets.pet.<id> (Örn: moxpets.pet.bee)
+  moxpets.pet.*:
+    description: Tüm petleri kullanabilme yetkisi.
+    default: op
+
+  # --- İZ (TRAIL) YETKİLERİ ---
+  # Kullanım: moxpets.trails.<efekt_kodu> (Örn: moxpets.trails.heart)
+  moxpets.trails.*:
+    description: Tüm efektleri kullanabilme yetkisi.
+    default: op
+
+  moxpets.wardrobe:
+    description: Pet gardırobunu açma yetkisi.
+    default: op
+
+  moxpets.rename:
+    description: Pet ismini değiştirme yetkisi.
+    default: op
+
+  moxpets.rename.color:
+    description: Pet isminde renk kodlarını kullanma yetkisi.
+    default: op
+
+    description: Yasaklı WorldGuard bölgelerinde bile pet çağırabilme.
+    default: op
+
+  moxpets.bypass.worlds:
+    description: Yasaklı dünyalarda bile pet çağırabilme.
+    default: op

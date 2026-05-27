@@ -1,0 +1,221 @@
+menu:
+  title: "&#33FF57Pet Efektleri (İzler)"
+  size: 54
+
+  # A-Z arası efektler, R = Kaldır, M = Ana Menü
+  pattern:
+    - "# # # # # # # # #"
+    - "# A B C D E F G #"
+    - "# H I J K L M N #"
+    - "# O P S T U V # #"
+    - "# # # # # # # # #"
+    - "< # # * # R # # >"
+
+  items:
+    '#':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    '*':
+      action: "OPEN_SETTINGS"
+      material: COMPASS
+      name: "&7Ana Menüye Dön"
+      
+    '<':
+      action: "PREVIOUS_PAGE"
+      material: ARROW
+      name: "&e« Önceki Sayfa"
+    '>':
+      action: "NEXT_PAGE"
+      material: ARROW
+      name: "&aSonraki Sayfa »"
+    'R':
+      action: "REMOVE_TRAIL"
+      material: BARRIER
+      name: "&cİzi Kaldır"
+      lore:
+        - "&7Mevcut efekti kapatır."
+
+    # --- EFEKTLER ---
+    # value: Bukkit Particle İsmi (HEART, FLAME, VILLAGER_HAPPY vb.)
+    # Yetki: moxpets.trails.<value_küçük_harf>
+
+    'A':
+      material: REDSTONE
+      name: "&#FF0000Kalp İzi"
+      action: "SET_TRAIL"
+      value: "HEART"
+      lore:
+        - "&7Petin arkasında aşk dolu kalpler çıkar."
+        - ""
+        - "&8Yetki: moxpets.trails.heart"
+    'B':
+      material: BLAZE_POWDER
+      name: "&#FF5500Ateş İzi"
+      action: "SET_TRAIL"
+      value: "FLAME"
+      lore:
+        - "&7Petin alevler saçarak yürür."
+        - ""
+        - "&8Yetki: moxpets.trails.flame"
+    'C':
+      material: FEATHER
+      name: "&#FFFFFFBulut İzi"
+      action: "SET_TRAIL"
+      value: "CLOUD"
+      lore:
+        - "&7Yumuşak beyaz bulutlar."
+        - ""
+        - "&8Yetki: moxpets.trails.cloud"
+    'D':
+      material: NOTE_BLOCK
+      name: "&#00AAFFMüzik İzi"
+      action: "SET_TRAIL"
+      value: "NOTE"
+      lore:
+        - "&7Etrafa müzik notaları saçılır."
+        - ""
+        - "&8Yetki: moxpets.trails.note"
+    'E':
+      material: EMERALD
+      name: "&#00FF00Mutlu İzi"
+      action: "SET_TRAIL"
+      value: "VILLAGER_HAPPY"
+      lore:
+        - "&7Yeşil parıltılar ve yıldızlar."
+        - ""
+        - "&8Yetki: moxpets.trails.villager_happy"
+    'F':
+      material: WATER_BUCKET
+      name: "&#0099FFSu İzi"
+      action: "SET_TRAIL"
+      value: "WATER_SPLASH"
+      lore:
+        - "&7Su damlacıkları bırakır."
+        - ""
+        - "&8Yetki: moxpets.trails.water_splash"
+    'G':
+      material: SOUL_SOIL
+      name: "&#00FFFFRuh Ateşi"
+      action: "SET_TRAIL"
+      value: "SOUL_FIRE_FLAME"
+      lore:
+        - "&7Mistik mavi alevler."
+        - ""
+        - "&8Yetki: moxpets.trails.soul_fire_flame"
+    'H':
+      material: MAGMA_CREAM
+      name: "&#FF4500Lav İzi"
+      action: "SET_TRAIL"
+      value: "LAVA"
+      lore:
+        - "&7Kıvılcımlı lav parçacıkları."
+        - ""
+        - "&8Yetki: moxpets.trails.lava"
+    'I':
+      material: SLIME_BALL
+      name: "&#55FF55Slime İzi"
+      action: "SET_TRAIL"
+      value: "SLIME"
+      lore:
+        - "&7Yapışkan yeşil parçacıklar."
+        - ""
+        - "&8Yetki: moxpets.trails.slime"
+    'J':
+      material: ENDER_PEARL
+      name: "&#AA00AAPortal İzi"
+      action: "SET_TRAIL"
+      value: "PORTAL"
+      lore:
+        - "&7Mor portal tozları."
+        - ""
+        - "&8Yetki: moxpets.trails.portal"
+    'K':
+      material: SNOWBALL
+      name: "&#E0F7FAKar İzi"
+      action: "SET_TRAIL"
+      value: "SNOWBALL"
+      lore:
+        - "&7Arkasında kar taneleri bırakır."
+        - ""
+        - "&8Yetki: moxpets.trails.snowball"
+    'L':
+      material: ENCHANTING_TABLE
+      name: "&#9933FFBüyü İzi"
+      action: "SET_TRAIL"
+      value: "ENCHANTMENT_TABLE"
+      lore:
+        - "&7Antik büyü harfleri."
+        - ""
+        - "&8Yetki: moxpets.trails.enchantment_table"
+    'M':
+      material: TOTEM_OF_UNDYING
+      name: "&#FFD700Totem İzi"
+      action: "SET_TRAIL"
+      value: "TOTEM"
+      lore:
+        - "&7Ölümsüzlük totemi efekti."
+        - ""
+        - "&8Yetki: moxpets.trails.totem"
+    'N':
+      material: INK_SAC
+      name: "&#1A1A1AMürekkep İzi"
+      action: "SET_TRAIL"
+      value: "SQUID_INK"
+      lore:
+        - "&7Karanlık siyah duman."
+        - ""
+        - "&8Yetki: moxpets.trails.squid_ink"
+    'O':
+      material: GLOWSTONE_DUST
+      name: "&#FFFF55Işıltı İzi"
+      action: "SET_TRAIL"
+      value: "INSTANT_EFFECT"
+      lore:
+        - "&7Beyaz parıltılar."
+        - ""
+        - "&8Yetki: moxpets.trails.instant_effect"
+    'P':
+      material: DRAGON_BREATH
+      name: "&#D81B60Ejderha Nefesi"
+      action: "SET_TRAIL"
+      value: "DRAGON_BREATH"
+      lore:
+        - "&7Yoğun mor duman."
+        - ""
+        - "&8Yetki: moxpets.trails.dragon_breath"
+    'S':
+      material: IRON_SWORD
+      name: "&#FFCC00Kritik Vuruş"
+      action: "SET_TRAIL"
+      value: "CRIT"
+      lore:
+        - "&7Savaşçı kritik vuruş efektleri."
+        - ""
+        - "&8Yetki: moxpets.trails.crit"
+    'T':
+      material: DIAMOND_SWORD
+      name: "&#00AAFFBüyülü Kritik"
+      action: "SET_TRAIL"
+      value: "MAGIC_CRIT"
+      lore:
+        - "&7Mavi kritik vuruş efektleri."
+        - ""
+        - "&8Yetki: moxpets.trails.magic_crit"
+    'U':
+      material: CAMPFIRE
+      name: "&#888888Duman İzi"
+      action: "SET_TRAIL"
+      value: "CAMPFIRE_COSY_SMOKE"
+      lore:
+        - "&7Yumuşak kamp ateşi dumanı."
+        - ""
+        - "&8Yetki: moxpets.trails.campfire_cosy_smoke"
+    'V':
+      material: HONEYCOMB
+      name: "&#FFD700Bal İzi"
+      action: "SET_TRAIL"
+      value: "DRIPPING_HONEY"
+      lore:
+        - "&7Damlayan bal efektleri."
+        - ""
+        - "&8Yetki: moxpets.trails.dripping_honey"

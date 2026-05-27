@@ -1,0 +1,105 @@
+# ==========================================================
+# [1] GENEL AYARLAR
+# ==========================================================
+prefix: "&#FF8800MoxPets &8» &r"
+
+# ==========================================================
+# [2] OYUNCU ETKİLEŞİM MESAJLARI
+# ==========================================================
+spawned: "%prefix%&#55FF55%pet% &7başarıyla çağırıldı! Keyfini çıkar."
+despawned: "%prefix%&#FF5555%pet% &7dinlenmeye gönderildi."
+cooldown: "%prefix%&#FF5555Lütfen tekrar işlem yapmadan önce biraz bekle."
+already-active: "%prefix%&#FF5555Zaten aktif bir petin var! Önce onu gönder."
+already-owned: "%prefix%&#55FF55Bu pete zaten sahipsin!"
+
+# --- Binme (Ride) ---
+ride-success: "%prefix%&#55FF55Petine bindin! &7(İnmek için SHIFT)"
+ride-fail: "%prefix%&#FF5555Bu pete binilemez veya çok uzakta."
+
+# ==========================================================
+# [3] HATA VE YETKİ MESAJLARI
+# ==========================================================
+no-permission: "%prefix%&#FF5555Üzgünüm, bu peti kullanmak için &#FFAA00%perm% &#FF5555yetkisine sahip değilsin."
+no-permission-command: "%prefix%&#FF5555Bunun için yetkin yok!"
+player-only: "%prefix%&#FF5555Bu komutu sadece oyuncular kullanabilir."
+error-db: "%prefix%&#AA0000Veritabanı bağlantı hatası! Lütfen yöneticiye bildir."
+
+# --- Bölge ve Dünya Engelleri ---
+disabled-world: "%prefix%&#FF5555Bu dünyada evcil hayvan çağırmak yasaklanmıştır."
+disabled-region: "%prefix%&#FF5555Tehlikeli bir bölgedesin! Petin güvenlik için gizlendi."
+pet-hidden-region: "%prefix%&#FFCC00Yasaklı bölgeye girdiğin için petin geçici olarak çantana saklandı."
+pet-restored: "%prefix%&#00AAFFGüvenli bölgeye döndün, &#FFFFFF%pet% &#00AAFFseninle tekrar buluştu!"
+anti-lag-active: "%prefix%&#FFAA00Sunucu şu an çok yoğun, petler dinlenmeye çekildi."
+
+# ==========================================================
+# [4] EKONOMİ VE MARKET
+# ==========================================================
+insufficient-funds: "%prefix%&#FF5555Yetersiz bakiye! Gereken: &#FFAA00%price%"
+purchased: "%prefix%&#55FF55Tebrikler! &#FFFF55%pet% &#55FF55artık senin."
+money-withdrawn: "%prefix%&#FFFF55Hesabından &#FFAA00%amount% &#FFFF55çekildi."
+
+# ==========================================================
+# [5] ÖZELLİKLER VE AYARLAR
+# ==========================================================
+
+# --- İsim Değiştirme ---
+name-changed: "%prefix%&#55FF55Petinin yeni ismi: &f%name%"
+name-too-long: "%prefix%&#FF5555İsim çok uzun! Maksimum &#FFAA00%limit% &#FF5555karakter kullanabilirsin."
+name-invalid-char: "%prefix%&#FF5555İsimde geçersiz karakterler var. (Sadece harf ve rakam)"
+
+# --- Gardırop (Zırh) ---
+wardrobe-updated: "%prefix%&#00D4FFKıyafet güncellendi!"
+wardrobe-cleared: "%prefix%&#FF5555Kıyafet çıkarıldı."
+
+# --- İzler (Trails) ---
+trail-selected: "%prefix%&#55FF55Efekt seçildi: %trail%"
+trail-removed: "%prefix%&#FF5555Efekt kaldırıldı."
+invalid-trail: "%prefix%&#FF5555Hatalı efekt ismi!"
+
+# --- Güçlendirmeler (Buffs) ---
+buff-enabled: "%prefix%&#55FF55%buff% &7özelliği aktif edildi!"
+buff-disabled: "%prefix%&#FF5555%buff% &7özelliği kapatıldı."
+
+# Menü içi durumlar (Lore için)
+buff-unlocked: "&a✔ AÇIK (Aktif)"
+buff-locked: "&c✖ KİLİTLİ &7(Gereken Lvl: &e%level%&7)"
+buff-locked-lore: "&7Bu özelliği açmak için petini\n&7daha fazla geliştirmelisin."
+
+# ==========================================================
+# [6] GUI (MENÜ) METİNLERİ
+# ==========================================================
+menu-status-active: "&#55FF55&lAKTİF &#55FF55(Yanında)"
+menu-status-passive: "&7Koleksiyonunda, çağrılmayı bekliyor."
+
+menu-label-selected: "&#55FF55(Seçili)"
+menu-label-owned: "&#FFAA00(Sahipsin)"
+
+menu-click-spawn: "&#00FF77» Çağırmak için Tıkla"
+menu-click-despawn: "&#FF5555» Göndermek için Tıkla"
+
+# Örs (Anvil)
+anvil-title: "&#00D4FFPet İsmini Belirle"
+anvil-default: "Yeni İsim"
+anvil-default-text: "Yeni İsim"
+
+# ==========================================================
+# [7] ADMIN KOMUTLARI
+# ==========================================================
+admin:
+  usage:
+    - "&8&m----------------------------------------"
+    - "&#FFAA00&lMoxPets Admin Komutları:"
+    - "&#FFFF55/pets reload &7- Konfigürasyon dosyalarını yeniler."
+    - "&#FFFF55/pets removeall &7- Sunucudaki tüm petleri siler."
+    - "&#FFFF55/pets give <oyuncu> <petID> &7- Oyuncuya zorla pet çağırır."
+    - "&#FFFF55/pets revoke <oyuncu> &7- Oyuncunun petini zorla gönderir."
+    - "&8&m----------------------------------------"
+
+  reload-success: "%prefix%&#55FF55Tüm dosyalar (Config, Lang, Menu, Pets) başarıyla yeniden yüklendi!"
+  remove-all: "%prefix%&#FFFF55Sunucudaki &f%count% &#FFFF55adet aktif pet silindi."
+
+  give-success: "%prefix%&#55FF55%player% &7adlı oyuncuya &#55FF55%pet% &7verildi."
+  give-fail-offline: "%prefix%&#FF5555Oyuncu bulunamadı veya çevrimdışı."
+  give-fail-pet: "%prefix%&#FF5555Belirtilen ID'ye sahip bir pet bulunamadı!"
+
+  revoke-success: "%prefix%&#FFFF55%player% &7adlı oyuncunun peti zorla alındı."

@@ -1,3 +1,4 @@
+# src/main/resources/menus/main.yml
 menu:
   title: "&8MoxPets Menüsü"
   size: 27
@@ -5,8 +6,8 @@ menu:
   # Ana menü deseni
   pattern:
     - "# # # # # # # # #"
-    - "# # O # # # S # #"
-    - "# # # # # # # # #"
+    - "# # O # F # S # #"
+    - "# # # # C # # # #"
 
   items:
     '#':
@@ -19,13 +20,20 @@ menu:
       lore:
         - "&7Zaten senin olan petleri"
         - "&7görüntülemek ve çağırmak için tıkla."
+    'F':
+      action: "OPEN_FAVORITES"
+      material: NETHER_STAR
+      name: "&6Favori Petlerim"
+      lore:
+        - "&7Favoriye eklediğin petleri"
+        - "&7hızlıca çağırmak için tıkla."
     'S':
       action: "OPEN_SHOP"
       material: EMERALD
       name: "&ePet Mağazası"
       lore:
         - "&7Yeni petler satın almak"
-        - "&7için buraya tıkla."
+        - "&7ve bufflarını incelemek için tıkla."
     'C':
       action: "CLOSE"
       material: BARRIER

@@ -1,0 +1,85 @@
+menu:
+  title: "&#00D4FF%pet% &8» &7Yönetim Paneli"
+  size: 45
+
+  # P = Pet Stats (Orta)
+  # R = Rename (İsim)
+  # W = Wardrobe (Kıyafet)
+  # T = Trails (İzler)
+  # B = Buffs (Güçler)
+  # G = Glow (Parıldama - YENİ!)
+  # D = Despawn (Gönder)
+  pattern:
+    - "X X X G P B X X X"
+    - "X X X X X X X X X"
+    - "X R X W X T X D X"
+    - "X X X X X X X X X"
+    - "M X X X X X X X X"
+
+  items:
+    'X': { material: BLACK_STAINED_GLASS_PANE, name: " " }
+    'M': { action: "OPEN_OWNED", material: ARROW, name: "&#FFAA00« Koleksiyon Listesi" }
+
+    # ORTA: DETAYLI İSTATİSTİK
+    'P':
+      material: PLAYER_HEAD
+      name: "&#00FF77%pet%"
+      lore:
+        - "&8------------------------"
+        - "&7Seviye: &#FFFF00%level%"
+        - "&7Sonraki Seviye:"
+        - "%progress_bar% &e%percentage%%"
+        - ""
+        - "&7Kalan Süre: &b%time_left%"
+        - "&8------------------------"
+
+    # YENİ: PARILDAMA (GLOW)
+    'G':
+      action: "TOGGLE_GLOW"
+      material: GLOW_BERRIES
+      name: "&#FFFF55Parıldama Efekti"
+      lore:
+        - "&7Petinin etrafında parlayan"
+        - "&7bir aura oluşturur."
+        - ""
+        - "&7Durum: %glow_status%"
+        - "&#FFFF55» Aç/Kapa"
+
+    # BUFF YÖNETİMİ (ALT MENÜYE GİDER)
+    'B':
+      action: "OPEN_BUFFS"
+      material: BEACON
+      name: "&#FF0055Güçlendirmeler"
+      lore:
+        - "&7Petinin sana verdiği"
+        - "&7özellikleri yönet."
+        - ""
+        - "&#FF0055» Menüyü Aç"
+
+    'R':
+      action: "RENAME_PET"
+      material: NAME_TAG
+      name: "&#FFAA00İsim Değiştir"
+      lore:
+        - "&7Petine yeni bir kimlik ver."
+
+    'W':
+      action: "OPEN_WARDROBE"
+      material: LEATHER_CHESTPLATE
+      name: "&#00D4FFGardırop"
+      lore:
+        - "&7Zırh ve aksesuarlar."
+
+    'T':
+      action: "OPEN_TRAILS"
+      material: BLAZE_POWDER
+      name: "&#FF5500İz Efektleri"
+      lore:
+        - "&7Arkasından çıkan efektler."
+
+    'D':
+      action: "REMOVE_PET"
+      material: BARRIER
+      name: "&#FF3333Peti Gönder"
+      lore:
+        - "&7Peti dinlenmeye yolla."

@@ -1,0 +1,61 @@
+menu:
+  title: "&#00E5FFPetler &8| &f(%page%/%max%)"
+  size: 54
+
+  # X = Siyah Cam
+  # P = Önceki Sayfa
+  # N = Sonraki Sayfa
+  # W = Gardırop
+  # R = Peti Gönder (Remove)
+  # M = Ana Menü
+  # @ = Pet Listesi
+  pattern:
+    - "X X X X X X X X X"
+    - "X @ @ @ @ @ @ @ X"
+    - "X @ @ @ @ @ @ @ X"
+    - "X @ @ @ @ @ @ @ X"
+    - "X X X X X X X X X"
+    - "P X X M X R X X N"
+
+  items:
+    'X':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+
+    'P':
+      action: "PREVIOUS_PAGE"
+      material: ARROW
+      name: "&#FFAA00« Önceki Sayfa"
+
+    'N':
+      action: "NEXT_PAGE"
+      material: ARROW
+      name: "&#00FF55Sonraki Sayfa »"
+
+    'M':
+      action: "OPEN_MAIN"
+      material: COMPASS
+      name: "&#CCCCCCAna Menüye Dön"
+      lore:
+        - "&7Diğer kategorilere göz at."
+        - ""
+        - "&#CCCCCC« Geri Dön"
+
+    'R':
+      action: "REMOVE_PET"
+      material: BARRIER
+      name: "&#FF3333Peti Gönder (Gizle)"
+      lore:
+        - "&7Şu an yanında olan petini"
+        - "&7dinlenmesi için gönderir."
+        - ""
+        - "&#FF3333» Tıkla ve Gönder"
+
+    # Petlerin listelendiği şablon
+    pet-template:
+      lore:
+        - ""
+        - " &7Durum: %status%"
+        - ""
+        - "&#00FF77[Sol Tık] &fÇağır / Gönder"
+        - "&#00FF77[Sağ Tık] &fAyarlar ve Özellikler"

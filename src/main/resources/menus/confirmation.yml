@@ -1,0 +1,27 @@
+menu:
+  title: "&8Satın Almayı Onayla"
+  size: 27
+
+  # O = Onayla, X = İptal, P = Satın Alınacak Pet (Ortada)
+  pattern:
+    - "# # # # # # # # #"
+    - "# O # # P # # X #"
+    - "# # # # # # # # #"
+
+  items:
+    '#':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    'O':
+      action: "CONFIRM_BUY"
+      material: LIME_STAINED_GLASS_PANE
+      name: "&a✔ EVET, SATIN AL"
+      lore:
+        - "&7Hesabından &6%price% Coin"
+        - "&7tahsil edilecek."
+    'X':
+      action: "CANCEL_BUY"
+      material: RED_STAINED_GLASS_PANE
+      name: "&c✘ HAYIR, VAZGEÇ"
+      lore:
+        - "&7Mağazaya geri dön."
