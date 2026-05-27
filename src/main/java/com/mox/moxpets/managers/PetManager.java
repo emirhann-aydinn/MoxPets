@@ -1,23 +1,26 @@
 package com.mox.moxpets.managers;
 
 import com.mox.moxpets.MyPets;
-import com.mox.moxpets.hooks.WorldGuardHook;
 import com.mox.moxpets.utils.ColorUtil;
 import com.mox.moxpets.utils.SkullUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-// BU SATIR HATAYI ÇÖZER:
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -27,35 +30,40 @@ public class PetManager {
 
     private final MyPets plugin;
 
-    // AKTİF VERİLER
     private final Map<UUID, ArmorStand> activePets = new HashMap<>();
     private final Map<UUID, ArmorStand> activeNameTags = new HashMap<>();
     private final Map<UUID, String> playerActivePetId = new HashMap<>();
     private final Map<UUID, String> hiddenPets = new HashMap<>();
 
-    // Geçici Mapler
     private final Map<UUID, Particle> activeTrails = new HashMap<>();
     private final Map<UUID, String> activeTrailNames = new HashMap<>();
     private final Map<UUID, Color> petArmorColors = new HashMap<>();
     private final Map<UUID, Long> lastXpGainTime = new HashMap<>();
+    private final Map<UUID, Long> actionCooldowns = new HashMap<>();
 
-    // DATA CACHE
     private final Map<UUID, Map<String, PetSaveData>> dataCache = new ConcurrentHashMap<>();
 
     private final List<PetData> loadedPets = new ArrayList<>();
     private final Map<String, PetData> petDataMap = new HashMap<>();
 
-    private final WorldGuardHook worldGuardHook;
     private final double NAMETAG_HEIGHT = 1.1;
     private boolean isLagging = false;
+    private final NamespacedKey petEntityKey;
 
     public PetManager(MyPets plugin) {
         this.plugin = plugin;
-        this.worldGuardHook = new WorldGuardHook();
+        this.petEntityKey = new NamespacedKey(plugin, "moxpet_entity");
         loadPetsFromConfig();
     }
 
-    // --- DATA YÖNETİMİ ---
+    public boolean checkCooldown(Player player) {
+        long now = System.currentTimeMillis();
+        long last = actionCooldowns.getOrDefault(player.getUniqueId(), 0L);
+        if (now - last < 1000) return false;
+        actionCooldowns.put(player.getUniqueId(), now);
+        return true;
+    }
+
     public void loadPlayerDataOnJoin(Player player) {
         UUID uid = player.getUniqueId();
         dataCache.put(uid, new HashMap<>());
@@ -73,7 +81,7 @@ public class PetManager {
         Map<String, PetSaveData> pets = dataCache.get(uid);
         for (Map.Entry<String, PetSaveData> entry : pets.entrySet()) {
             PetSaveData data = entry.getValue();
-            plugin.getDatabaseManager().savePetData(uid, entry.getKey(), data.customName, data.level, data.exp, data.trail, data.armorColor, data.glow, data.disabledBuffs);
+            plugin.getDatabaseManager().savePetData(uid, entry.getKey(), data.customName, data.level, data.exp, data.trail, data.armorColor, data.glow, data.disabledBuffs, data.isFavorite, data.defenseMode);
         }
         String active = playerActivePetId.get(uid);
         plugin.getDatabaseManager().saveActivePet(uid, active);
@@ -82,14 +90,14 @@ public class PetManager {
         playerActivePetId.remove(uid);
     }
 
-    private PetSaveData getPetData(Player player, String petId) {
+    public PetSaveData getPetData(Player player, String petId) {
         UUID uid = player.getUniqueId();
         dataCache.computeIfAbsent(uid, k -> new HashMap<>());
         if (!dataCache.get(uid).containsKey(petId)) {
             PetSaveData data = plugin.getDatabaseManager().loadPetData(uid, petId);
             if (data == null) {
                 String defName = petDataMap.get(petId).nameTag;
-                data = new PetSaveData(defName, 1, 0.0, null, null, false, new HashSet<>());
+                data = new PetSaveData(defName, 1, 0.0, null, null, false, new HashSet<>(), false, false);
             }
             dataCache.get(uid).put(petId, data);
         }
@@ -119,12 +127,10 @@ public class PetManager {
         }
     }
 
-    // --- BUFF YÖNETİMİ ---
     public boolean isBuffDisabled(Player player, String buffName) {
         String petId = getActivePetId(player);
         if (petId == null) return false;
-        PetSaveData data = getPetData(player, petId);
-        return data.disabledBuffs.contains(buffName);
+        return getPetData(player, petId).disabledBuffs.contains(buffName);
     }
 
     public void toggleBuff(Player player, String buffName) {
@@ -142,11 +148,28 @@ public class PetManager {
         saveAsync(player, petId);
     }
 
-    // --- ÖZELLİK YÖNETİMİ ---
+    public void toggleDefenseMode(Player player) {
+        String petId = getActivePetId(player);
+        if (petId == null) return;
+        PetSaveData data = getPetData(player, petId);
+        data.defenseMode = !data.defenseMode;
+        if (!data.defenseMode) {
+            player.setGravity(true);
+        }
+        player.sendMessage(ColorUtil.colorize(data.defenseMode ? "&aSavunma Modu Aktif! (Kubbe Koruması Açık)" : "&cSavunma Modu Kapalı."));
+        saveAsync(player, petId);
+    }
+
+    public void toggleFavorite(Player player, String petId) {
+        PetSaveData data = getPetData(player, petId);
+        data.isFavorite = !data.isFavorite;
+        player.sendMessage(ColorUtil.colorize(data.isFavorite ? "&aPet favorilere eklendi!" : "&cPet favorilerden çıkarıldı."));
+        saveAsync(player, petId);
+    }
+
     public boolean isGlowing(Player player) {
         String petId = getActivePetId(player);
-        if (petId == null) return false;
-        return getPetData(player, petId).glow;
+        return petId != null && getPetData(player, petId).glow;
     }
 
     public void toggleGlow(Player player) {
@@ -159,7 +182,7 @@ public class PetManager {
         saveAsync(player, petId);
     }
 
-    public void setTrail(Player player, String particleName) {
+    public void setTrail(Player player, String particleName, String displayName) {
         String petId = getActivePetId(player);
         if (petId == null) return;
         try {
@@ -168,7 +191,7 @@ public class PetManager {
             data.trail = particleName;
             activeTrails.put(player.getUniqueId(), Particle.valueOf(particleName));
             activeTrailNames.put(player.getUniqueId(), particleName);
-            player.sendMessage(plugin.getConfigManager().getMessage("trail-selected", "%trail%", particleName));
+            player.sendMessage(plugin.getConfigManager().getMessage("trail-selected", "%trail%", displayName));
             saveAsync(player, petId);
         } catch (Exception e) {}
     }
@@ -206,17 +229,6 @@ public class PetManager {
         saveAsync(player, petId);
     }
 
-    public void setCustomPetName(Player player, String newName) {
-        String petId = getActivePetId(player);
-        if (petId == null) return;
-        String colored = ColorUtil.colorize(newName);
-        PetSaveData data = getPetData(player, petId);
-        data.customName = colored;
-        updateNameTag(player);
-        player.sendMessage(plugin.getConfigManager().getMessage("name-changed", "%name%", colored));
-        saveAsync(player, petId);
-    }
-
     public void spawnPet(Player player, String petId) {
         if (isLagging || !isAllowed(player)) return;
         hiddenPets.remove(player.getUniqueId());
@@ -236,6 +248,7 @@ public class PetManager {
         Location spawnLoc = player.getLocation().add(0, 1, 0);
         ArmorStand stand = player.getWorld().spawn(spawnLoc, ArmorStand.class, as -> {
             as.setVisible(false); as.setGravity(false); as.setSmall(true); as.setMarker(true);
+            as.getPersistentDataContainer().set(petEntityKey, PersistentDataType.STRING, "pet");
             String texture = plugin.getConfigManager().getPetsConfig().getString("pets." + petId + ".texture");
             as.getEquipment().setHelmet(SkullUtil.getCustomSkull(texture, baseData.name));
             if (saveData.armorColor != null) {
@@ -250,6 +263,7 @@ public class PetManager {
 
         ArmorStand nameTag = player.getWorld().spawn(spawnLoc.clone().add(0, NAMETAG_HEIGHT, 0), ArmorStand.class, as -> {
             as.setVisible(false); as.setGravity(false); as.setMarker(true); as.setSmall(true); as.setCustomNameVisible(true);
+            as.getPersistentDataContainer().set(petEntityKey, PersistentDataType.STRING, "pet");
         });
 
         activePets.put(uid, stand);
@@ -276,9 +290,9 @@ public class PetManager {
                 removePet(player, false); continue;
             }
 
-            // Glow
             String petId = playerActivePetId.get(uid);
             PetSaveData saveData = getPetData(player, petId);
+
             if (saveData.glow && !pet.isGlowing()) pet.setGlowing(true);
 
             if (pet.getPassengers().contains(player)) {
@@ -288,7 +302,6 @@ public class PetManager {
 
             PetData data = petDataMap.get(petId);
 
-            // Bufflar
             if (data != null && data.buffNames != null) {
                 int currentLevel = saveData.level;
                 for (String buffName : data.buffNames) {
@@ -307,7 +320,6 @@ public class PetManager {
                 }
             }
 
-            // XP
             if (plugin.getConfig().getBoolean("leveling.enabled")) {
                 if (!lastXpGainTime.containsKey(uid) || (now - lastXpGainTime.get(uid) > 60000)) {
                     giveExp(player, plugin.getConfig().getDouble("leveling.xp-per-minute", 1.0));
@@ -317,14 +329,65 @@ public class PetManager {
 
             if (!isAllowed(player)) { hiddenPets.put(uid, petId); removePet(player, false); continue; }
 
-            if (!player.getWorld().equals(pet.getWorld()) || pet.getLocation().distance(player.getLocation()) > tpDist) {
-                pet.teleport(player.getLocation());
-                if (activeNameTags.containsKey(uid)) activeNameTags.get(uid).teleport(player.getLocation().add(0, NAMETAG_HEIGHT, 0));
-            } else {
-                Location target;
-                Location pLoc = player.getLocation();
-                Vector dir = pLoc.getDirection().setY(0).normalize(); // ARTIK HATA VERMEZ (Import Eklendi)
+            Location target;
+            Location pLoc = player.getLocation();
 
+            if (saveData.defenseMode) {
+                // Oyuncuyu havada sabitle
+                player.setGravity(false);
+                player.setVelocity(new Vector(0, 0, 0));
+                player.setFallDistance(0);
+
+                // Kubbe partiküllerini oluştur
+                double radius = 2.0;
+                for (double y = 0; y <= Math.PI; y += Math.PI / 10) {
+                    double r = Math.sin(y) * radius;
+                    double h = Math.cos(y) * radius;
+                    for (double a = 0; a < Math.PI * 2; a += Math.PI / 10) {
+                        double x = Math.cos(a) * r;
+                        double z = Math.sin(a) * r;
+                        player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, pLoc.clone().add(x, h + 1, z), 1, 0, 0, 0, 0);
+                    }
+                }
+
+                // Petin konumunu oyuncunun üstüne sabitle
+                target = pLoc.clone().add(0, 2.5 + bobbing + data.offsetY, 0);
+
+                // Petten oyuncuya güç (büyü) hüzmesi
+                Location petLoc = pet.getLocation().add(0, 0.5, 0);
+                Location center = pLoc.clone().add(0, 1, 0);
+                Vector dir = center.toVector().subtract(petLoc.toVector());
+                double dist = dir.length();
+                if (dist > 0.1) {
+                    dir.normalize();
+                    for (double i = 0; i < dist; i += 0.2) {
+                        player.getWorld().spawnParticle(Particle.ENCHANT, petLoc.clone().add(dir.clone().multiply(i)), 1, 0, 0, 0, 0);
+                    }
+                }
+
+                // --- YENİ EKLENEN MOBLARI PÜSKÜRTME (KNOCKBACK) SİSTEMİ ---
+                // Oyuncunun 2.5 blok yarıçapındaki tüm Entity'leri (Varlıkları) al
+                for (Entity entity : player.getNearbyEntities(2.5, 2.5, 2.5)) {
+                    // Sadece canlı varlıkları (Moblar vb.) hedef al, oyuncuları ve zırh askılarını (petler) yoksay
+                    if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof ArmorStand)) {
+                        // Mob'un bulunduğu konumu oyuncunun konumundan çıkararak fırlatılacak yönü bul
+                        Vector pushDirection = entity.getLocation().toVector().subtract(player.getLocation().toVector());
+
+                        // Eğer oyuncu ile mob tam olarak aynı koordinattaysa hatayı önlemek için rastgele bir yön ata
+                        if (pushDirection.lengthSquared() < 0.01) {
+                            pushDirection = new Vector(Math.random() - 0.5, 0, Math.random() - 0.5);
+                        }
+
+                        // Yönü normalize et, şiddeti 1.5 olarak ayarla ve hafifçe (0.6) havaya fırlat
+                        pushDirection = pushDirection.normalize().multiply(1.5).setY(0.6);
+                        entity.setVelocity(pushDirection);
+                    }
+                }
+
+            } else {
+                if (!player.hasGravity()) player.setGravity(true);
+
+                Vector dir = pLoc.getDirection().setY(0).normalize();
                 if (mode.equals("left-shoulder") || mode.equals("right-shoulder")) {
                     int sideMultiplier = mode.equals("left-shoulder") ? 1 : -1;
                     Vector side = new Vector(dir.getZ(), 0, -dir.getX()).normalize().multiply(0.75 * sideMultiplier);
@@ -334,6 +397,12 @@ public class PetManager {
                 } else {
                     target = pLoc.clone().add(pLoc.getDirection().multiply(-1.5)).add(0, 1.5 + bobbing + data.offsetY, 0);
                 }
+            }
+
+            if (!saveData.defenseMode && (!player.getWorld().equals(pet.getWorld()) || pet.getLocation().distance(player.getLocation()) > tpDist)) {
+                pet.teleport(player.getLocation());
+                if (activeNameTags.containsKey(uid)) activeNameTags.get(uid).teleport(player.getLocation().add(0, NAMETAG_HEIGHT, 0));
+            } else {
                 Location current = pet.getLocation();
                 Vector velocity = target.toVector().subtract(current.toVector()).multiply(speed);
                 Location newLoc = current.add(velocity);
@@ -381,7 +450,7 @@ public class PetManager {
     private void saveAsync(Player player, String petId) {
         PetSaveData data = getPetData(player, petId);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            plugin.getDatabaseManager().savePetData(player.getUniqueId(), petId, data.customName, data.level, data.exp, data.trail, data.armorColor, data.glow, data.disabledBuffs);
+            plugin.getDatabaseManager().savePetData(player.getUniqueId(), petId, data.customName, data.level, data.exp, data.trail, data.armorColor, data.glow, data.disabledBuffs, data.isFavorite, data.defenseMode);
         });
     }
 
@@ -391,6 +460,7 @@ public class PetManager {
         if(activeNameTags.containsKey(uid)) { activeNameTags.get(uid).remove(); activeNameTags.remove(uid); }
         String pId = playerActivePetId.remove(uid);
         activeTrails.remove(uid); activeTrailNames.remove(uid); petArmorColors.remove(uid);
+        player.setGravity(true);
         if(clearData && pId != null) { hiddenPets.remove(uid); player.sendMessage(plugin.getConfigManager().getMessage("despawned", "%pet%", "Pet")); saveAsync(player, pId); }
     }
 
@@ -405,16 +475,69 @@ public class PetManager {
     public String getActiveTrailId(Player player) { return activeTrailNames.get(player.getUniqueId()); }
     public int getActivePetCount() { return activePets.size(); }
     public Color getPetArmorColor(Player player) { return petArmorColors.get(player.getUniqueId()); }
-    public void removeAllPets() { activePets.values().forEach(ArmorStand::remove); activeNameTags.values().forEach(ArmorStand::remove); }
+
+    public void removeAllPets() {
+        activePets.keySet().forEach(uid -> {
+            Player p = Bukkit.getPlayer(uid);
+            if (p != null && p.isOnline()) p.setGravity(true);
+        });
+        activePets.values().forEach(ArmorStand::remove);
+        activeNameTags.values().forEach(ArmorStand::remove);
+        activePets.clear();
+        activeNameTags.clear();
+
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity entity : world.getEntitiesByClass(ArmorStand.class)) {
+                if (entity.getPersistentDataContainer().has(petEntityKey, PersistentDataType.STRING)) {
+                    entity.remove();
+                }
+            }
+        }
+    }
+
     public boolean isAllowed(Player player) { return true; }
     public void ridePet(Player player) { if (!activePets.containsKey(player.getUniqueId())) { player.sendMessage(ColorUtil.colorize("&cPetin yok!")); return; } ArmorStand pet = activePets.get(player.getUniqueId()); if (pet.getPassengers().contains(player)) pet.removePassenger(player); else { pet.addPassenger(player); player.sendMessage(plugin.getConfigManager().getMessage("ride-success")); } }
-    public int getBuffRequiredLevel(String b) { return plugin.getConfig().getInt("buff-definitions."+b+".level_required",0); }
-    public String resolveBuffEffect(String b) { return plugin.getConfig().getString("buff-definitions."+b+".effect"); }
-    public String getBuffDisplayName(String b) { String n=plugin.getConfig().getString("buff-definitions."+b+".display"); return ColorUtil.colorize(n!=null?n:b); }
+
+    public int getBuffRequiredLevel(String b) {
+        ConfigurationSection sec = plugin.getConfig().getConfigurationSection("buff-definitions");
+        if (sec != null) {
+            for (String key : sec.getKeys(false)) {
+                if (key.equalsIgnoreCase(b)) {
+                    return plugin.getConfig().getInt("buff-definitions." + key + ".level_required", 0);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public String resolveBuffEffect(String b) {
+        ConfigurationSection sec = plugin.getConfig().getConfigurationSection("buff-definitions");
+        if (sec != null) {
+            for (String key : sec.getKeys(false)) {
+                if (key.equalsIgnoreCase(b)) {
+                    return plugin.getConfig().getString("buff-definitions." + key + ".effect");
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getBuffDisplayName(String b) {
+        ConfigurationSection sec = plugin.getConfig().getConfigurationSection("buff-definitions");
+        if (sec != null) {
+            for (String key : sec.getKeys(false)) {
+                if (key.equalsIgnoreCase(b)) {
+                    String n = plugin.getConfig().getString("buff-definitions." + key + ".display");
+                    return ColorUtil.colorize(n != null ? n : b);
+                }
+            }
+        }
+        return ColorUtil.colorize(b);
+    }
 
     public static class PetSaveData {
-        public String customName; public int level; public double exp; public String trail; public Integer armorColor; public boolean glow; public Set<String> disabledBuffs;
-        public PetSaveData(String name, int lvl, double xp, String tr, Integer armor, boolean gl, Set<String> buffs) { this.customName = name; this.level = lvl; this.exp = xp; this.trail = tr; this.armorColor = armor; this.glow = gl; this.disabledBuffs = buffs; }
+        public String customName; public int level; public double exp; public String trail; public Integer armorColor; public boolean glow; public Set<String> disabledBuffs; public boolean isFavorite; public boolean defenseMode;
+        public PetSaveData(String name, int lvl, double xp, String tr, Integer armor, boolean gl, Set<String> buffs, boolean fav, boolean def) { this.customName = name; this.level = lvl; this.exp = xp; this.trail = tr; this.armorColor = armor; this.glow = gl; this.disabledBuffs = buffs; this.isFavorite = fav; this.defenseMode = def; }
     }
     public static class PetData {
         public String id, name, nameTag, permission, texture; public ItemStack icon; public double price, offsetX, offsetY, offsetZ; public List<String> buffNames;

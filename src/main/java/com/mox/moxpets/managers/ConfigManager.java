@@ -11,11 +11,9 @@ public class ConfigManager {
 
     private final MyPets plugin;
 
-    // Config Dosyaları
     private FileConfiguration petsConfig;
     private FileConfiguration langConfig;
 
-    // Menü Dosyaları
     private FileConfiguration mainMenuConfig;
     private FileConfiguration ownedMenuConfig;
     private FileConfiguration shopMenuConfig;
@@ -23,22 +21,20 @@ public class ConfigManager {
     private FileConfiguration trailsMenuConfig;
     private FileConfiguration wardrobeMenuConfig;
     private FileConfiguration buffsMenuConfig;
-    private FileConfiguration upgradesMenuConfig; // settings.yml buraya yüklenecek
+    private FileConfiguration upgradesMenuConfig;
+    private FileConfiguration favoritesMenuConfig;
 
     public ConfigManager(MyPets plugin) {
         this.plugin = plugin;
     }
 
     public void loadConfigs() {
-        // Ana Config
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
 
-        // Veri Dosyaları
         petsConfig = loadFile("pets.yml");
         langConfig = loadFile("lang.yml");
 
-        // Menüler
         mainMenuConfig = loadFile("menus/main.yml");
         ownedMenuConfig = loadFile("menus/owned_pets.yml");
         shopMenuConfig = loadFile("menus/shop.yml");
@@ -46,9 +42,8 @@ public class ConfigManager {
         trailsMenuConfig = loadFile("menus/trails.yml");
         wardrobeMenuConfig = loadFile("menus/wardrobe.yml");
         buffsMenuConfig = loadFile("menus/pet_buff.yml");
-
-        // Settings Menüsü (Kod içinde upgradesMenuConfig olarak geçiyor)
         upgradesMenuConfig = loadFile("menus/settings.yml");
+        favoritesMenuConfig = loadFile("menus/favorites.yml");
     }
 
     private FileConfiguration loadFile(String path) {
@@ -80,7 +75,6 @@ public class ConfigManager {
         return ColorUtil.colorize(msg);
     }
 
-    // --- GETTER METODLARI ---
     public FileConfiguration getPetsConfig() { return petsConfig; }
     public FileConfiguration getLangConfig() { return langConfig; }
     public FileConfiguration getMainMenuConfig() { return mainMenuConfig; }
@@ -90,5 +84,6 @@ public class ConfigManager {
     public FileConfiguration getTrailsMenuConfig() { return trailsMenuConfig; }
     public FileConfiguration getWardrobeMenuConfig() { return wardrobeMenuConfig; }
     public FileConfiguration getBuffsMenuConfig() { return buffsMenuConfig; }
-    public FileConfiguration getUpgradesMenuConfig() { return upgradesMenuConfig; } // BU METOD EKLENDİ
+    public FileConfiguration getUpgradesMenuConfig() { return upgradesMenuConfig; }
+    public FileConfiguration getFavoritesMenuConfig() { return favoritesMenuConfig; }
 }

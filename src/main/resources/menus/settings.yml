@@ -1,18 +1,18 @@
 menu:
-  title: "&#00D4FF%pet% &8» &7Yönetim Paneli"
+  title: "&#00D4FFPet &8» &7Yönetim Paneli"
   size: 45
 
   # P = Pet Stats (Orta)
-  # R = Rename (İsim)
   # W = Wardrobe (Kıyafet)
   # T = Trails (İzler)
   # B = Buffs (Güçler)
-  # G = Glow (Parıldama - YENİ!)
+  # G = Glow (Parıldama)
+  # S = Savunma Modu (Kubbe)
   # D = Despawn (Gönder)
   pattern:
     - "X X X G P B X X X"
     - "X X X X X X X X X"
-    - "X R X W X T X D X"
+    - "X S X W X T X D X"
     - "X X X X X X X X X"
     - "M X X X X X X X X"
 
@@ -33,7 +33,6 @@ menu:
         - "&7Kalan Süre: &b%time_left%"
         - "&8------------------------"
 
-    # YENİ: PARILDAMA (GLOW)
     'G':
       action: "TOGGLE_GLOW"
       material: GLOW_BERRIES
@@ -45,7 +44,6 @@ menu:
         - "&7Durum: %glow_status%"
         - "&#FFFF55» Aç/Kapa"
 
-    # BUFF YÖNETİMİ (ALT MENÜYE GİDER)
     'B':
       action: "OPEN_BUFFS"
       material: BEACON
@@ -56,12 +54,18 @@ menu:
         - ""
         - "&#FF0055» Menüyü Aç"
 
-    'R':
-      action: "RENAME_PET"
-      material: NAME_TAG
-      name: "&#FFAA00İsim Değiştir"
+    'S':
+      action: "TOGGLE_DEFENSE"
+      material: SHIELD
+      name: "&#00D4FFSavunma Modu"
       lore:
-        - "&7Petine yeni bir kimlik ver."
+        - "&7Etrafında seni dış etkenlerden"
+        - "&7koruyan bir kubbe oluşturur."
+        - "&7Altındaki blok kırılırsa seni"
+        - "&7sabit olarak havada tutar."
+        - ""
+        - "&7Durum: %status%"
+        - "&#00D4FF» Aç/Kapa"
 
     'W':
       action: "OPEN_WARDROBE"

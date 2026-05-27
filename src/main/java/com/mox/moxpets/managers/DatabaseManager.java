@@ -17,6 +17,7 @@ public class DatabaseManager {
         this.plugin = plugin;
         connect();
         createTables();
+        updateTables();
     }
 
     private void connect() {
@@ -24,14 +25,12 @@ public class DatabaseManager {
             File file = new File(plugin.getDataFolder(), "database.db");
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
-            plugin.getLogger().info("Veritabani baglantisi basarili (UTF-8 Destekli).");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void createTables() {
-        // disabled_buffs sütunu eklendi (TEXT olarak virgülle ayrılmış saklanacak)
         String sql = "CREATE TABLE IF NOT EXISTS moxpets_pet_data (" +
                 "uuid VARCHAR(36) NOT NULL, " +
                 "pet_id VARCHAR(32) NOT NULL, " +
@@ -58,14 +57,23 @@ public class DatabaseManager {
         }
     }
 
+    private void updateTables() {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("ALTER TABLE moxpets_pet_data ADD COLUMN is_favorite BOOLEAN DEFAULT 0");
+        } catch (SQLException ignored) {}
+
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("ALTER TABLE moxpets_pet_data ADD COLUMN defense_mode BOOLEAN DEFAULT 0");
+        } catch (SQLException ignored) {}
+    }
+
     public void close() {
         try { if (connection != null && !connection.isClosed()) connection.close(); }
         catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // KAYDETME (disabledBuffs setini String'e çeviriyoruz)
-    public void savePetData(UUID uuid, String petId, String name, int level, double exp, String trail, Integer armorColor, boolean glow, Set<String> disabledBuffs) {
-        String sql = "INSERT OR REPLACE INTO moxpets_pet_data (uuid, pet_id, custom_name, level, exp, trail, armor_color, glow, disabled_buffs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void savePetData(UUID uuid, String petId, String name, int level, double exp, String trail, Integer armorColor, boolean glow, Set<String> disabledBuffs, boolean isFavorite, boolean defenseMode) {
+        String sql = "INSERT OR REPLACE INTO moxpets_pet_data (uuid, pet_id, custom_name, level, exp, trail, armor_color, glow, disabled_buffs, is_favorite, defense_mode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
             ps.setString(2, petId);
@@ -76,9 +84,10 @@ public class DatabaseManager {
             if (armorColor == null) ps.setNull(7, Types.INTEGER); else ps.setInt(7, armorColor);
             ps.setBoolean(8, glow);
 
-            // Set -> String (Örn: "Hızlandırıcı,Tank")
             String buffsStr = (disabledBuffs == null || disabledBuffs.isEmpty()) ? "" : String.join(",", disabledBuffs);
             ps.setString(9, buffsStr);
+            ps.setBoolean(10, isFavorite);
+            ps.setBoolean(11, defenseMode);
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -86,7 +95,6 @@ public class DatabaseManager {
         }
     }
 
-    // YÜKLEME (String'i Set'e çeviriyoruz)
     public PetManager.PetSaveData loadPetData(UUID uuid, String petId) {
         String sql = "SELECT * FROM moxpets_pet_data WHERE uuid = ? AND pet_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -101,6 +109,11 @@ public class DatabaseManager {
                 int armor = rs.getInt("armor_color");
                 boolean hasArmor = !rs.wasNull();
                 boolean glow = rs.getBoolean("glow");
+                boolean isFavorite = false;
+                boolean defenseMode = false;
+
+                try { isFavorite = rs.getBoolean("is_favorite"); } catch (SQLException ignored) {}
+                try { defenseMode = rs.getBoolean("defense_mode"); } catch (SQLException ignored) {}
 
                 String buffsStr = rs.getString("disabled_buffs");
                 Set<String> disabledBuffs = new HashSet<>();
@@ -108,7 +121,7 @@ public class DatabaseManager {
                     disabledBuffs.addAll(Arrays.asList(buffsStr.split(",")));
                 }
 
-                return new PetManager.PetSaveData(name, level, exp, trail, hasArmor ? armor : null, glow, disabledBuffs);
+                return new PetManager.PetSaveData(name, level, exp, trail, hasArmor ? armor : null, glow, disabledBuffs, isFavorite, defenseMode);
             }
         } catch (SQLException e) {
             e.printStackTrace();

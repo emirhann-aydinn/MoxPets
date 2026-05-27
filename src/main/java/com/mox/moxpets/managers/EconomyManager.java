@@ -1,21 +1,20 @@
 package com.mox.moxpets.managers;
 
-import com.mox.moxpets.MyPets; // Doğru import
-import net.milkbowl.vault.economy.Economy;
+import com.mox.moxpets.MyPets;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import net.milkbowl.vault.economy.Economy;
 
 public class EconomyManager {
-
     private final MyPets plugin;
-    private Economy economy = null;
+    private Economy econ = null;
 
     public EconomyManager(MyPets plugin) {
         this.plugin = plugin;
+        setupEconomy();
     }
 
-    // BURASI "private" İDİ, "public" YAPILDI
-    public boolean setupEconomy() {
+    private boolean setupEconomy() {
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
@@ -23,18 +22,17 @@ public class EconomyManager {
         if (rsp == null) {
             return false;
         }
-        economy = rsp.getProvider();
-        return economy != null;
+        econ = rsp.getProvider();
+        return econ != null;
     }
 
     public boolean hasMoney(Player player, double amount) {
-        if (economy == null) return true; // Ekonomi yoksa bedava varsay
-        return economy.has(player, amount);
+        return econ != null && econ.has(player, amount);
     }
 
     public void withdrawPlayer(Player player, double amount) {
-        if (economy != null) {
-            economy.withdrawPlayer(player, amount);
+        if (econ != null) {
+            econ.withdrawPlayer(player, amount);
         }
     }
 }

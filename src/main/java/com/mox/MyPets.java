@@ -2,8 +2,8 @@ package com.mox.moxpets;
 
 import com.mox.moxpets.commands.PetCommand;
 import com.mox.moxpets.gui.PetGUI;
-import com.mox.moxpets.listeners.InteractListener;
 import com.mox.moxpets.listeners.PetProtectionListener;
+import com.mox.moxpets.listeners.InteractListener;
 import com.mox.moxpets.managers.ConfigManager;
 import com.mox.moxpets.managers.DatabaseManager;
 import com.mox.moxpets.managers.EconomyManager;
@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class MyPets extends JavaPlugin implements Listener { // Listener eklendi
+public class MyPets extends JavaPlugin implements Listener {
 
     private ConfigManager configManager;
     private DatabaseManager databaseManager;
@@ -28,10 +28,9 @@ public class MyPets extends JavaPlugin implements Listener { // Listener eklendi
         configManager = new ConfigManager(this);
         configManager.loadConfigs();
 
-        databaseManager = new DatabaseManager(this); // SQL Başlatıldı
-
-        petManager = new PetManager(this);
+        databaseManager = new DatabaseManager(this);
         economyManager = new EconomyManager(this);
+        petManager = new PetManager(this);
         petGUI = new PetGUI(this);
 
         getCommand("moxpets").setExecutor(new PetCommand(this));
@@ -39,37 +38,31 @@ public class MyPets extends JavaPlugin implements Listener { // Listener eklendi
         getServer().getPluginManager().registerEvents(petGUI, this);
         getServer().getPluginManager().registerEvents(new PetProtectionListener(this), this);
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);
-        getServer().getPluginManager().registerEvents(this, this); // Bu sınıfı listener olarak kaydet
+        getServer().getPluginManager().registerEvents(this, this);
 
         Bukkit.getScheduler().runTaskTimer(this, () -> petManager.updatePets(), 0L, 2L);
 
-        getLogger().info("MoxPets (SQL) aktif!");
+        getLogger().info("MoxPets aktif! (Paket yollari %100 uyarlandi)");
     }
 
     @Override
     public void onDisable() {
-        // Sunucu kapanırken tüm oyuncuların verisini kaydet
         Bukkit.getOnlinePlayers().forEach(p -> petManager.savePlayerData(p));
 
         if (petManager != null) petManager.removeAllPets();
         if (databaseManager != null) databaseManager.close();
     }
 
-    // --- SQL YÜKLEME/KAYDETME EVENTLERİ ---
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        // Oyuncu girince verilerini SQL'den çekip Cache'e at
         petManager.loadPlayerDataOnJoin(event.getPlayer());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        // Oyuncu çıkınca Cache'deki veriyi SQL'e yaz
         petManager.savePlayerData(event.getPlayer());
     }
 
-    // Getters
     public ConfigManager getConfigManager() { return configManager; }
     public DatabaseManager getDatabaseManager() { return databaseManager; }
     public PetManager getPetManager() { return petManager; }
