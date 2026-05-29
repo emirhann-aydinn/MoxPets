@@ -2,7 +2,6 @@ package com.mox.moxpets.listeners;
 
 import com.mox.moxpets.MyPets;
 import com.mox.moxpets.managers.PetManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -90,7 +89,7 @@ public class PetProtectionListener implements Listener {
         Player player = event.getPlayer();
         plugin.getPetManager().removePet(player, false);
 
-        Bukkit.getScheduler().runTaskLater(plugin.getBukkitPlugin(), () -> {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) {
                 String activeId = plugin.getPetManager().getActivePetId(player);
                 if (activeId != null) {
@@ -103,7 +102,7 @@ public class PetProtectionListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        Bukkit.getScheduler().runTaskLater(plugin.getBukkitPlugin(), () -> {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) {
                 String activeId = plugin.getPetManager().getActivePetId(player);
                 if (activeId != null) {

@@ -36,7 +36,7 @@ public class PetGUI implements Listener {
 
     public PetGUI(MyPets plugin) {
         this.plugin = plugin;
-        this.petIdKey = new NamespacedKey(plugin.getBukkitPlugin(), "pet_id");
+        this.petIdKey = new NamespacedKey(plugin, "pet_id");
     }
 
     public void openMainMenu(Player player) {

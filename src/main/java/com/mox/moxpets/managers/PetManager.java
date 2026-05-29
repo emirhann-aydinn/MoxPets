@@ -52,7 +52,7 @@ public class PetManager {
 
     public PetManager(MyPets plugin) {
         this.plugin = plugin;
-        this.petEntityKey = new NamespacedKey(plugin.getBukkitPlugin(), "moxpet_entity");
+        this.petEntityKey = new NamespacedKey(plugin, "moxpet_entity");
         loadPetsFromConfig();
     }
 
@@ -71,7 +71,7 @@ public class PetManager {
         if (lastActive != null && petDataMap.containsKey(lastActive)) {
             PetSaveData data = plugin.getDatabaseManager().loadPetData(uid, lastActive);
             if (data != null) dataCache.get(uid).put(lastActive, data);
-            Bukkit.getScheduler().runTask(plugin.getBukkitPlugin(), () -> spawnPet(player, lastActive));
+            Bukkit.getScheduler().runTask(plugin, () -> spawnPet(player, lastActive));
         }
     }
 
@@ -333,10 +333,12 @@ public class PetManager {
             Location pLoc = player.getLocation();
 
             if (saveData.defenseMode) {
+                // Oyuncuyu havada sabitle
                 player.setGravity(false);
                 player.setVelocity(new Vector(0, 0, 0));
                 player.setFallDistance(0);
 
+                // Kubbe partiküllerini oluştur
                 double radius = 2.0;
                 for (double y = 0; y <= Math.PI; y += Math.PI / 10) {
                     double r = Math.sin(y) * radius;
@@ -348,8 +350,10 @@ public class PetManager {
                     }
                 }
 
+                // Petin konumunu oyuncunun üstüne sabitle
                 target = pLoc.clone().add(0, 2.5 + bobbing + data.offsetY, 0);
 
+                // Petten oyuncuya güç (büyü) hüzmesi
                 Location petLoc = pet.getLocation().add(0, 0.5, 0);
                 Location center = pLoc.clone().add(0, 1, 0);
                 Vector dir = center.toVector().subtract(petLoc.toVector());
@@ -361,12 +365,20 @@ public class PetManager {
                     }
                 }
 
+                // --- YENİ EKLENEN MOBLARI PÜSKÜRTME (KNOCKBACK) SİSTEMİ ---
+                // Oyuncunun 2.5 blok yarıçapındaki tüm Entity'leri (Varlıkları) al
                 for (Entity entity : player.getNearbyEntities(2.5, 2.5, 2.5)) {
+                    // Sadece canlı varlıkları (Moblar vb.) hedef al, oyuncuları ve zırh askılarını (petler) yoksay
                     if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof ArmorStand)) {
+                        // Mob'un bulunduğu konumu oyuncunun konumundan çıkararak fırlatılacak yönü bul
                         Vector pushDirection = entity.getLocation().toVector().subtract(player.getLocation().toVector());
+
+                        // Eğer oyuncu ile mob tam olarak aynı koordinattaysa hatayı önlemek için rastgele bir yön ata
                         if (pushDirection.lengthSquared() < 0.01) {
                             pushDirection = new Vector(Math.random() - 0.5, 0, Math.random() - 0.5);
                         }
+
+                        // Yönü normalize et, şiddeti 1.5 olarak ayarla ve hafifçe (0.6) havaya fırlat
                         pushDirection = pushDirection.normalize().multiply(1.5).setY(0.6);
                         entity.setVelocity(pushDirection);
                     }
@@ -437,7 +449,7 @@ public class PetManager {
 
     private void saveAsync(Player player, String petId) {
         PetSaveData data = getPetData(player, petId);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin.getBukkitPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             plugin.getDatabaseManager().savePetData(player.getUniqueId(), petId, data.customName, data.level, data.exp, data.trail, data.armorColor, data.glow, data.disabledBuffs, data.isFavorite, data.defenseMode);
         });
     }
