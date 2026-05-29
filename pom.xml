@@ -88,6 +88,14 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>8.0.33</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.mox.moxbox</groupId>
+            <artifactId>moxbox-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
